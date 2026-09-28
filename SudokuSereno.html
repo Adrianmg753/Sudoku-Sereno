@@ -7,7 +7,7 @@
   <style>
     :root {
       --fondo: #eef7f4;
-      --panel: rgba(255, 255, 255, 0.88);
+      --panel: rgba(255, 255, 255, 0.9);
       --primario: #4f8f83;
       --primario-oscuro: #356d64;
       --secundario: #dceee8;
@@ -33,14 +33,13 @@
       justify-content: center;
       color: var(--texto);
       font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(167, 220, 204, 0.45), transparent 28%),
-        radial-gradient(circle at 85% 80%, rgba(164, 198, 224, 0.35), transparent 30%),
-        linear-gradient(135deg, #edf8f4, #f7fbff);
+      background: var(--fondo);
+      transition: background 0.35s ease;
     }
 
     button,
-    select {
+    select,
+    input {
       font: inherit;
     }
 
@@ -49,7 +48,7 @@
     }
 
     .juego {
-      width: min(100%, 970px);
+      width: min(100%, 1020px);
       padding: 26px;
       border: 1px solid rgba(255, 255, 255, 0.75);
       border-radius: 28px;
@@ -104,7 +103,7 @@
 
     .contenido {
       display: grid;
-      grid-template-columns: minmax(300px, 540px) 1fr;
+      grid-template-columns: minmax(300px, 560px) 1fr;
       gap: 28px;
       align-items: start;
     }
@@ -131,7 +130,7 @@
       background: white;
       font-size: clamp(1.05rem, 4vw, 1.75rem);
       font-weight: 600;
-      transition: background 0.15s, color 0.15s, transform 0.1s;
+      transition: background 0.15s, color 0.15s;
     }
 
     .celda:nth-child(3n) {
@@ -179,16 +178,43 @@
       background: #fff0f0;
     }
 
+    .valor-celda {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notas {
+      position: absolute;
+      inset: 3px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      color: #547e76;
+      font-size: clamp(0.42rem, 1.25vw, 0.7rem);
+      font-weight: 700;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .nota {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .panel {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .grupo {
-      padding: 17px;
+      padding: 16px;
       border-radius: 20px;
-      background: rgba(236, 247, 243, 0.8);
+      background: rgba(236, 247, 243, 0.82);
     }
 
     .grupo h2 {
@@ -196,10 +222,18 @@
       font-size: 1rem;
     }
 
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--suave);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
     select,
     .boton {
       width: 100%;
-      padding: 12px 14px;
+      padding: 11px 13px;
       border: 0;
       border-radius: 13px;
       color: var(--texto);
@@ -217,12 +251,14 @@
       background: #f7fffc;
     }
 
-    .boton.primario {
+    .boton.primario,
+    .boton.activo {
       color: white;
       background: var(--primario);
     }
 
-    .boton.primario:hover {
+    .boton.primario:hover,
+    .boton.activo:hover {
       background: var(--primario-oscuro);
     }
 
@@ -256,15 +292,69 @@
       background: var(--seleccion);
     }
 
+    .numero.usado {
+      opacity: 0.38;
+    }
+
+    .modo-notas {
+      margin-bottom: 10px;
+    }
+
+    .modo-notas.activo {
+      color: white;
+      background: var(--primario);
+    }
+
     .audio-control {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
 
-    .audio-control button.activo {
-      color: white;
-      background: var(--primario);
+    .colores {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+    }
+
+    .color {
+      aspect-ratio: 1;
+      padding: 0;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(40, 66, 61, 0.18);
+      transition: transform 0.15s, outline 0.15s;
+    }
+
+    .color:hover {
+      transform: scale(1.1);
+    }
+
+    .color.seleccionado {
+      outline: 3px solid var(--primario-oscuro);
+      outline-offset: 2px;
+    }
+
+    .color-personalizado {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .color-personalizado label {
+      margin: 0;
+      flex: 1;
+    }
+
+    #colorPersonalizado {
+      width: 52px;
+      height: 35px;
+      padding: 2px;
+      border: 0;
+      border-radius: 9px;
+      background: white;
+      cursor: pointer;
     }
 
     .mensaje {
@@ -276,10 +366,10 @@
     }
 
     .instrucciones {
-      margin: 4px 0 0;
+      margin: 10px 0 0;
       color: var(--suave);
-      font-size: 0.82rem;
-      line-height: 1.5;
+      font-size: 0.8rem;
+      line-height: 1.45;
     }
 
     .modal {
@@ -332,7 +422,7 @@
       }
     }
 
-    @media (max-width: 760px) {
+    @media (max-width: 800px) {
       body {
         padding: 12px;
         align-items: flex-start;
@@ -366,13 +456,13 @@
       }
 
       .grupo:first-child,
-      .grupo:last-child,
+      .grupo:nth-child(2),
       .mensaje {
         grid-column: 1 / -1;
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 520px) {
       .panel {
         display: flex;
       }
@@ -383,6 +473,11 @@
 
       .celda {
         font-size: 1.15rem;
+      }
+
+      .notas {
+        inset: 1px;
+        font-size: 0.43rem;
       }
     }
   </style>
@@ -434,8 +529,36 @@
     </div>
 
     <div class="grupo">
-      <h2>Números</h2>
+      <h2>Números y notas</h2>
+
+      <button id="modoNotas" class="boton modo-notas">
+        ✎ Notas desactivadas
+      </button>
+
       <div id="numeros" class="numeros"></div>
+
+      <p class="instrucciones">
+        Activa las notas para colocar varios números pequeños en una casilla.
+        Las notas no cuentan como respuestas. Pulsa N para cambiar de modo.
+      </p>
+    </div>
+
+    <div class="grupo">
+      <h2>Color del fondo</h2>
+
+      <div id="colores" class="colores">
+        <button class="color seleccionado" data-color="#eef7f4" style="background:#eef7f4" aria-label="Fondo verde claro"></button>
+        <button class="color" data-color="#eaf3fb" style="background:#eaf3fb" aria-label="Fondo azul claro"></button>
+        <button class="color" data-color="#f7edf4" style="background:#f7edf4" aria-label="Fondo rosa claro"></button>
+        <button class="color" data-color="#f7f1df" style="background:#f7f1df" aria-label="Fondo crema"></button>
+        <button class="color" data-color="#eeeafb" style="background:#eeeafb" aria-label="Fondo violeta claro"></button>
+        <button class="color" data-color="#e8eeee" style="background:#e8eeee" aria-label="Fondo gris claro"></button>
+      </div>
+
+      <div class="color-personalizado">
+        <label for="colorPersonalizado">Color personalizado</label>
+        <input id="colorPersonalizado" type="color" value="#eef7f4">
+      </div>
     </div>
 
     <div class="grupo">
@@ -447,8 +570,7 @@
       </div>
 
       <p class="instrucciones">
-        La música y los efectos se generan directamente en tu navegador.
-        También puedes usar las teclas del 1 al 9 y Retroceso.
+        La música y los sonidos se generan directamente en el navegador.
       </p>
     </div>
 
@@ -473,15 +595,18 @@
     const mensajeElemento = document.getElementById("mensaje");
     const modalElemento = document.getElementById("modal");
     const resultadoFinal = document.getElementById("resultadoFinal");
+    const botonNotas = document.getElementById("modoNotas");
 
     let solucion = [];
     let puzzleInicial = [];
     let tableroActual = [];
+    let notas = crearMatrizDeNotas();
     let seleccion = null;
     let errores = 0;
     let segundos = 0;
     let temporizador = null;
     let partidaTerminada = false;
+    let modoNotasActivo = false;
 
     let audioContexto = null;
     let musicaActiva = false;
@@ -497,6 +622,13 @@
 
     function crearMatrizVacia() {
       return Array.from({ length: 9 }, () => Array(9).fill(0));
+    }
+
+    function crearMatrizDeNotas() {
+      return Array.from(
+        { length: 9 },
+        () => Array.from({ length: 9 }, () => new Set())
+      );
     }
 
     function mezclar(lista) {
@@ -604,7 +736,7 @@
 
         puzzle[fila][columna] = 0;
 
-        const copia = puzzle.map(f => [...f]);
+        const copia = puzzle.map(filaPuzzle => [...filaPuzzle]);
 
         if (contarSoluciones(copia, 2) !== 1) {
           puzzle[fila][columna] = anterior;
@@ -624,18 +756,20 @@
       partidaTerminada = false;
 
       setTimeout(() => {
-        const dificultad = dificultadElemento.value;
-        const generado = generarPuzzle(dificultad);
+        const generado = generarPuzzle(dificultadElemento.value);
 
         solucion = generado.solucion;
         puzzleInicial = generado.puzzle.map(fila => [...fila]);
         tableroActual = generado.puzzle.map(fila => [...fila]);
+        notas = crearMatrizDeNotas();
 
         seleccion = null;
         errores = 0;
         segundos = 0;
+        modoNotasActivo = false;
 
-        erroresElemento.textContent = errores;
+        actualizarBotonNotas();
+        erroresElemento.textContent = "0";
         tiempoElemento.textContent = "00:00";
         mensajeElemento.textContent = "";
         modalElemento.classList.remove("visible");
@@ -654,27 +788,64 @@
       for (let fila = 0; fila < 9; fila++) {
         for (let columna = 0; columna < 9; columna++) {
           const celda = document.createElement("button");
-          const valor = tableroActual[fila][columna];
 
           celda.className = "celda";
           celda.dataset.fila = fila;
           celda.dataset.columna = columna;
-          celda.setAttribute(
-            "aria-label",
-            `Fila ${fila + 1}, columna ${columna + 1}${valor ? `, número ${valor}` : ""}`
-          );
 
-          if (valor !== 0) celda.textContent = valor;
           if (puzzleInicial[fila][columna] !== 0) {
             celda.classList.add("fija");
           }
 
-          celda.addEventListener("click", () => seleccionarCelda(fila, columna));
+          actualizarContenidoCelda(celda, fila, columna);
+
+          celda.addEventListener("click", () => {
+            seleccionarCelda(fila, columna);
+          });
+
           tableroElemento.appendChild(celda);
         }
       }
 
       actualizarResaltado();
+      actualizarEstadoNumeros();
+    }
+
+    function actualizarContenidoCelda(celda, fila, columna) {
+      const valor = tableroActual[fila][columna];
+      celda.innerHTML = "";
+
+      if (valor !== 0) {
+        const elementoValor = document.createElement("span");
+        elementoValor.className = "valor-celda";
+        elementoValor.textContent = valor;
+        celda.appendChild(elementoValor);
+        celda.setAttribute(
+          "aria-label",
+          `Fila ${fila + 1}, columna ${columna + 1}, número ${valor}`
+        );
+        return;
+      }
+
+      const contenedorNotas = document.createElement("span");
+      contenedorNotas.className = "notas";
+
+      for (let numero = 1; numero <= 9; numero++) {
+        const nota = document.createElement("span");
+        nota.className = "nota";
+        nota.textContent = notas[fila][columna].has(numero) ? numero : "";
+        contenedorNotas.appendChild(nota);
+      }
+
+      celda.appendChild(contenedorNotas);
+
+      const notasActivas = [...notas[fila][columna]].sort().join(", ");
+      celda.setAttribute(
+        "aria-label",
+        `Fila ${fila + 1}, columna ${columna + 1}${
+          notasActivas ? `, notas ${notasActivas}` : ", vacía"
+        }`
+      );
     }
 
     function seleccionarCelda(fila, columna) {
@@ -723,33 +894,93 @@
       });
     }
 
-    function colocarNumero(numero) {
+    function alternarModoNotas() {
+      modoNotasActivo = !modoNotasActivo;
+      actualizarBotonNotas();
+      reproducirSonido("seleccion");
+    }
+
+    function actualizarBotonNotas() {
+      botonNotas.classList.toggle("activo", modoNotasActivo);
+      botonNotas.textContent = modoNotasActivo
+        ? "✎ Notas activadas"
+        : "✎ Notas desactivadas";
+      botonNotas.setAttribute("aria-pressed", String(modoNotasActivo));
+    }
+
+    function introducirNumero(numero) {
       if (!seleccion || partidaTerminada) return;
 
       const { fila, columna } = seleccion;
 
       if (puzzleInicial[fila][columna] !== 0) {
-        mensajeElemento.textContent = "Ese número forma parte del sudoku.";
+        mensajeElemento.textContent =
+          "Ese número forma parte del sudoku.";
         reproducirSonido("error");
         return;
       }
 
+      if (modoNotasActivo) {
+        cambiarNota(fila, columna, numero);
+      } else {
+        colocarRespuesta(fila, columna, numero);
+      }
+    }
+
+    function cambiarNota(fila, columna, numero) {
       if (numero === 0) {
-        tableroActual[fila][columna] = 0;
-        mensajeElemento.textContent = "";
+        notas[fila][columna].clear();
         actualizarCelda(fila, columna);
+        mensajeElemento.textContent = "Notas borradas.";
+        reproducirSonido("borrar");
+        return;
+      }
+
+      if (tableroActual[fila][columna] !== 0) {
+        mensajeElemento.textContent =
+          "Borra primero la respuesta para añadir notas.";
+        reproducirSonido("error");
+        return;
+      }
+
+      if (notas[fila][columna].has(numero)) {
+        notas[fila][columna].delete(numero);
+      } else {
+        notas[fila][columna].add(numero);
+      }
+
+      actualizarCelda(fila, columna);
+      mensajeElemento.textContent = "Nota actualizada.";
+      reproducirSonido("nota");
+    }
+
+    function colocarRespuesta(fila, columna, numero) {
+      if (numero === 0) {
+        if (tableroActual[fila][columna] !== 0) {
+          tableroActual[fila][columna] = 0;
+        } else {
+          notas[fila][columna].clear();
+        }
+
+        actualizarCelda(fila, columna);
+        actualizarEstadoNumeros();
+        mensajeElemento.textContent = "";
         reproducirSonido("borrar");
         return;
       }
 
       tableroActual[fila][columna] = numero;
+      notas[fila][columna].clear();
       actualizarCelda(fila, columna);
 
       if (numero !== solucion[fila][columna]) {
         errores++;
         erroresElemento.textContent = errores;
         marcarError(fila, columna);
-        mensajeElemento.textContent = "Ese número no encaja. Respira e inténtalo de nuevo.";
+
+        mensajeElemento.textContent =
+          "Ese número no encaja. Respira e inténtalo de nuevo.";
+
         reproducirSonido("error");
 
         if (errores >= 3) {
@@ -757,21 +988,51 @@
             "Has alcanzado 3 errores, pero puedes seguir jugando con calma.";
         }
       } else {
+        eliminarNumeroDeNotasRelacionadas(fila, columna, numero);
         mensajeElemento.textContent = "";
         reproducirSonido("acierto");
       }
 
+      actualizarEstadoNumeros();
       actualizarResaltado();
       comprobarVictoria();
+    }
+
+    function eliminarNumeroDeNotasRelacionadas(fila, columna, numero) {
+      const inicioFila = Math.floor(fila / 3) * 3;
+      const inicioColumna = Math.floor(columna / 3) * 3;
+
+      for (let i = 0; i < 9; i++) {
+        notas[fila][i].delete(numero);
+        notas[i][columna].delete(numero);
+      }
+
+      for (let f = inicioFila; f < inicioFila + 3; f++) {
+        for (let c = inicioColumna; c < inicioColumna + 3; c++) {
+          notas[f][c].delete(numero);
+        }
+      }
+
+      for (let i = 0; i < 9; i++) {
+        actualizarCelda(fila, i);
+        actualizarCelda(i, columna);
+      }
+
+      for (let f = inicioFila; f < inicioFila + 3; f++) {
+        for (let c = inicioColumna; c < inicioColumna + 3; c++) {
+          actualizarCelda(f, c);
+        }
+      }
     }
 
     function actualizarCelda(fila, columna) {
       const indice = fila * 9 + columna;
       const celda = tableroElemento.children[indice];
-      const valor = tableroActual[fila][columna];
 
-      celda.textContent = valor === 0 ? "" : valor;
+      if (!celda) return;
+
       celda.classList.remove("error");
+      actualizarContenidoCelda(celda, fila, columna);
     }
 
     function marcarError(fila, columna) {
@@ -783,6 +1044,25 @@
       setTimeout(() => {
         celda.classList.remove("error");
       }, 900);
+    }
+
+    function actualizarEstadoNumeros() {
+      const botones = document.querySelectorAll(".numero");
+
+      botones.forEach((boton, indice) => {
+        const numero = indice + 1;
+        let cantidad = 0;
+
+        for (let fila = 0; fila < 9; fila++) {
+          for (let columna = 0; columna < 9; columna++) {
+            if (tableroActual[fila][columna] === numero) {
+              cantidad++;
+            }
+          }
+        }
+
+        boton.classList.toggle("usado", cantidad >= 9);
+      });
     }
 
     function comprobarTablero() {
@@ -806,11 +1086,19 @@
         completarPartida();
       } else if (incorrectas > 0) {
         mensajeElemento.textContent =
-          `Hay ${incorrectas} ${incorrectas === 1 ? "casilla incorrecta" : "casillas incorrectas"}.`;
+          `Hay ${incorrectas} ${
+            incorrectas === 1
+              ? "casilla incorrecta"
+              : "casillas incorrectas"
+          }.`;
+
         reproducirSonido("error");
       } else {
         mensajeElemento.textContent =
-          `Todo va bien. Quedan ${vacias} ${vacias === 1 ? "casilla" : "casillas"}.`;
+          `Todo va bien. Quedan ${vacias} ${
+            vacias === 1 ? "casilla" : "casillas"
+          }.`;
+
         reproducirSonido("acierto");
       }
     }
@@ -818,7 +1106,7 @@
     function darPista() {
       if (partidaTerminada) return;
 
-      let candidatas = [];
+      const candidatas = [];
 
       for (let fila = 0; fila < 9; fila++) {
         for (let columna = 0; columna < 9; columna++) {
@@ -850,14 +1138,27 @@
           candidatas[Math.floor(Math.random() * candidatas.length)];
       }
 
-      tableroActual[candidata.fila][candidata.columna] =
+      const numeroCorrecto =
         solucion[candidata.fila][candidata.columna];
 
+      tableroActual[candidata.fila][candidata.columna] = numeroCorrecto;
+      notas[candidata.fila][candidata.columna].clear();
+
       seleccion = candidata;
+
+      eliminarNumeroDeNotasRelacionadas(
+        candidata.fila,
+        candidata.columna,
+        numeroCorrecto
+      );
+
       actualizarCelda(candidata.fila, candidata.columna);
       actualizarResaltado();
+      actualizarEstadoNumeros();
 
-      mensajeElemento.textContent = "Pista colocada. Sigue a tu ritmo.";
+      mensajeElemento.textContent =
+        "Pista colocada. Sigue a tu ritmo.";
+
       reproducirSonido("pista");
       comprobarVictoria();
     }
@@ -865,7 +1166,10 @@
     function comprobarVictoria() {
       for (let fila = 0; fila < 9; fila++) {
         for (let columna = 0; columna < 9; columna++) {
-          if (tableroActual[fila][columna] !== solucion[fila][columna]) {
+          if (
+            tableroActual[fila][columna] !==
+            solucion[fila][columna]
+          ) {
             return false;
           }
         }
@@ -882,10 +1186,14 @@
       clearInterval(temporizador);
 
       const dificultad =
-        dificultadElemento.options[dificultadElemento.selectedIndex].text;
+        dificultadElemento.options[
+          dificultadElemento.selectedIndex
+        ].text;
 
       resultadoFinal.textContent =
-        `Completaste el nivel ${dificultad} en ${formatearTiempo(segundos)} con ${errores} ${errores === 1 ? "error" : "errores"}.`;
+        `Completaste el nivel ${dificultad} en ` +
+        `${formatearTiempo(segundos)} con ${errores} ` +
+        `${errores === 1 ? "error" : "errores"}.`;
 
       modalElemento.classList.add("visible");
       reproducirSonido("victoria");
@@ -893,11 +1201,15 @@
 
     function reiniciarPartida() {
       tableroActual = puzzleInicial.map(fila => [...fila]);
+      notas = crearMatrizDeNotas();
+
       seleccion = null;
       errores = 0;
       segundos = 0;
       partidaTerminada = false;
+      modoNotasActivo = false;
 
+      actualizarBotonNotas();
       erroresElemento.textContent = "0";
       tiempoElemento.textContent = "00:00";
       mensajeElemento.textContent = "";
@@ -921,7 +1233,11 @@
       const minutos = Math.floor(totalSegundos / 60);
       const segundosRestantes = totalSegundos % 60;
 
-      return `${String(minutos).padStart(2, "0")}:${String(segundosRestantes).padStart(2, "0")}`;
+      return (
+        String(minutos).padStart(2, "0") +
+        ":" +
+        String(segundosRestantes).padStart(2, "0")
+      );
     }
 
     function crearBotonesNumeros() {
@@ -929,12 +1245,59 @@
 
       for (let numero = 1; numero <= 9; numero++) {
         const boton = document.createElement("button");
+
         boton.className = "numero";
         boton.textContent = numero;
-        boton.setAttribute("aria-label", `Colocar número ${numero}`);
-        boton.addEventListener("click", () => colocarNumero(numero));
+        boton.setAttribute("aria-label", `Introducir número ${numero}`);
+        boton.addEventListener("click", () => introducirNumero(numero));
+
         contenedor.appendChild(boton);
       }
+    }
+
+    function cambiarFondo(color, botonSeleccionado = null) {
+      document.documentElement.style.setProperty("--fondo", color);
+      document.getElementById("colorPersonalizado").value = color;
+
+      document.querySelectorAll(".color").forEach(boton => {
+        boton.classList.toggle(
+          "seleccionado",
+          boton === botonSeleccionado
+        );
+      });
+
+      try {
+        localStorage.setItem("sudoku-color-fondo", color);
+      } catch (_) {}
+    }
+
+    function prepararSelectorDeFondo() {
+      const botonesColor = document.querySelectorAll(".color");
+      const selectorPersonalizado =
+        document.getElementById("colorPersonalizado");
+
+      botonesColor.forEach(boton => {
+        boton.addEventListener("click", () => {
+          cambiarFondo(boton.dataset.color, boton);
+        });
+      });
+
+      selectorPersonalizado.addEventListener("input", evento => {
+        cambiarFondo(evento.target.value);
+      });
+
+      try {
+        const colorGuardado =
+          localStorage.getItem("sudoku-color-fondo");
+
+        if (colorGuardado) {
+          const botonCoincidente = [...botonesColor].find(
+            boton => boton.dataset.color === colorGuardado
+          );
+
+          cambiarFondo(colorGuardado, botonCoincidente || null);
+        }
+      } catch (_) {}
     }
 
     function prepararAudio() {
@@ -949,7 +1312,12 @@
       }
     }
 
-    function tocarNota(frecuencia, duracion, volumen = 0.04, tipo = "sine") {
+    function tocarNota(
+      frecuencia,
+      duracion,
+      volumen = 0.04,
+      tipo = "sine"
+    ) {
       if (!sonidosActivos) return;
 
       prepararAudio();
@@ -962,7 +1330,10 @@
       oscilador.frequency.setValueAtTime(frecuencia, ahora);
 
       ganancia.gain.setValueAtTime(0.0001, ahora);
-      ganancia.gain.exponentialRampToValueAtTime(volumen, ahora + 0.03);
+      ganancia.gain.exponentialRampToValueAtTime(
+        volumen,
+        ahora + 0.03
+      );
       ganancia.gain.exponentialRampToValueAtTime(
         0.0001,
         ahora + duracion
@@ -980,24 +1351,48 @@
 
       const sonidos = {
         seleccion: () => tocarNota(523.25, 0.12, 0.018),
+
+        nota: () => tocarNota(587.33, 0.1, 0.014),
+
         acierto: () => {
           tocarNota(659.25, 0.25, 0.03);
-          setTimeout(() => tocarNota(783.99, 0.3, 0.025), 90);
+          setTimeout(
+            () => tocarNota(783.99, 0.3, 0.025),
+            90
+          );
         },
-        error: () => tocarNota(196, 0.35, 0.025, "triangle"),
-        borrar: () => tocarNota(392, 0.15, 0.02),
+
+        error: () =>
+          tocarNota(196, 0.35, 0.025, "triangle"),
+
+        borrar: () =>
+          tocarNota(392, 0.15, 0.02),
+
         pista: () => {
           tocarNota(523.25, 0.35, 0.025);
-          setTimeout(() => tocarNota(659.25, 0.4, 0.025), 120);
+          setTimeout(
+            () => tocarNota(659.25, 0.4, 0.025),
+            120
+          );
         },
+
         inicio: () => {
           tocarNota(392, 0.3, 0.025);
-          setTimeout(() => tocarNota(523.25, 0.45, 0.025), 130);
+          setTimeout(
+            () => tocarNota(523.25, 0.45, 0.025),
+            130
+          );
         },
+
         victoria: () => {
-          [523.25, 659.25, 783.99, 1046.5].forEach((nota, indice) => {
-            setTimeout(() => tocarNota(nota, 0.7, 0.035), indice * 160);
-          });
+          [523.25, 659.25, 783.99, 1046.5].forEach(
+            (nota, indice) => {
+              setTimeout(
+                () => tocarNota(nota, 0.7, 0.035),
+                indice * 160
+              );
+            }
+          );
         }
       };
 
@@ -1014,7 +1409,9 @@
         [130.81, 174.61, 220]
       ];
 
-      const acorde = acordes[Math.floor(Math.random() * acordes.length)];
+      const acorde =
+        acordes[Math.floor(Math.random() * acordes.length)];
+
       const ahora = audioContexto.currentTime;
 
       acorde.forEach((frecuencia, indice) => {
@@ -1033,7 +1430,10 @@
           indice === 0 ? 0.018 : 0.009,
           ahora + 1.5
         );
-        ganancia.gain.exponentialRampToValueAtTime(0.0001, ahora + 7);
+        ganancia.gain.exponentialRampToValueAtTime(
+          0.0001,
+          ahora + 7
+        );
 
         oscilador.connect(filtro);
         filtro.connect(ganancia);
@@ -1051,12 +1451,18 @@
       musicaActiva = !musicaActiva;
 
       const boton = document.getElementById("musica");
+
       boton.classList.toggle("activo", musicaActiva);
-      boton.textContent = musicaActiva ? "♫ Música activada" : "♫ Música";
+      boton.textContent = musicaActiva
+        ? "♫ Música activada"
+        : "♫ Música";
 
       if (musicaActiva) {
         tocarAcordeAmbiental();
-        intervaloMusica = setInterval(tocarAcordeAmbiental, 6200);
+        intervaloMusica = setInterval(
+          tocarAcordeAmbiental,
+          6200
+        );
       } else {
         clearInterval(intervaloMusica);
         intervaloMusica = null;
@@ -1064,7 +1470,9 @@
         nodosMusica.forEach(nodo => {
           try {
             if (typeof nodo.stop === "function") nodo.stop();
-            if (typeof nodo.disconnect === "function") nodo.disconnect();
+            if (typeof nodo.disconnect === "function") {
+              nodo.disconnect();
+            }
           } catch (_) {}
         });
 
@@ -1076,24 +1484,57 @@
       sonidosActivos = !sonidosActivos;
 
       const boton = document.getElementById("sonidos");
+
       boton.classList.toggle("activo", sonidosActivos);
       boton.textContent = sonidosActivos
         ? "♪ Sonidos activados"
         : "♪ Sonidos";
     }
 
-    document.getElementById("nuevo").addEventListener("click", iniciarPartida);
-    document.getElementById("comprobar").addEventListener("click", comprobarTablero);
-    document.getElementById("pista").addEventListener("click", darPista);
-    document.getElementById("borrar").addEventListener("click", () => colocarNumero(0));
-    document.getElementById("reiniciar").addEventListener("click", reiniciarPartida);
-    document.getElementById("musica").addEventListener("click", alternarMusica);
-    document.getElementById("sonidos").addEventListener("click", alternarSonidos);
-    document.getElementById("otraPartida").addEventListener("click", iniciarPartida);
+    document
+      .getElementById("nuevo")
+      .addEventListener("click", iniciarPartida);
+
+    document
+      .getElementById("comprobar")
+      .addEventListener("click", comprobarTablero);
+
+    document
+      .getElementById("pista")
+      .addEventListener("click", darPista);
+
+    document
+      .getElementById("borrar")
+      .addEventListener("click", () => introducirNumero(0));
+
+    document
+      .getElementById("reiniciar")
+      .addEventListener("click", reiniciarPartida);
+
+    document
+      .getElementById("musica")
+      .addEventListener("click", alternarMusica);
+
+    document
+      .getElementById("sonidos")
+      .addEventListener("click", alternarSonidos);
+
+    document
+      .getElementById("otraPartida")
+      .addEventListener("click", iniciarPartida);
+
+    botonNotas.addEventListener("click", alternarModoNotas);
 
     document.addEventListener("keydown", evento => {
+      if (
+        evento.target.tagName === "SELECT" ||
+        evento.target.tagName === "INPUT"
+      ) {
+        return;
+      }
+
       if (evento.key >= "1" && evento.key <= "9") {
-        colocarNumero(Number(evento.key));
+        introducirNumero(Number(evento.key));
       }
 
       if (
@@ -1101,7 +1542,12 @@
         evento.key === "Delete" ||
         evento.key === "0"
       ) {
-        colocarNumero(0);
+        evento.preventDefault();
+        introducirNumero(0);
+      }
+
+      if (evento.key.toLowerCase() === "n") {
+        alternarModoNotas();
       }
 
       if (!seleccion) return;
@@ -1116,9 +1562,12 @@
       if (movimientos[evento.key]) {
         evento.preventDefault();
 
-        const [cambioFila, cambioColumna] = movimientos[evento.key];
+        const [cambioFila, cambioColumna] =
+          movimientos[evento.key];
+
         seleccion.fila =
           (seleccion.fila + cambioFila + 9) % 9;
+
         seleccion.columna =
           (seleccion.columna + cambioColumna + 9) % 9;
 
@@ -1127,6 +1576,7 @@
     });
 
     crearBotonesNumeros();
+    prepararSelectorDeFondo();
     iniciarPartida();
   </script>
 </body>
