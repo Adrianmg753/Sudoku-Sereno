@@ -4,10 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sudoku Sereno</title>
+  <link
+    rel="icon"
+    type="image/png"
+    href="https://cdn-icons-png.flaticon.com/512/6258/6258392.png"
+  >
   <style>
     :root {
       --fondo: #eef7f4;
-      --panel: rgba(255, 255, 255, 0.9);
+      --panel: rgba(255, 255, 255, 0.92);
       --primario: #4f8f83;
       --primario-oscuro: #356d64;
       --secundario: #dceee8;
@@ -17,7 +22,7 @@
       --error: #d96c6c;
       --seleccion: #cbe9df;
       --relacionada: #e9f5f1;
-      --sombra: 0 18px 45px rgba(43, 88, 78, 0.15);
+      --sombra: 0 18px 45px rgba(43, 88, 78, 0.16);
     }
 
     * {
@@ -47,17 +52,195 @@
       cursor: pointer;
     }
 
-    .juego {
-      width: min(100%, 1020px);
-      padding: 26px;
-      border: 1px solid rgba(255, 255, 255, 0.75);
-      border-radius: 28px;
-      background: var(--panel);
-      box-shadow: var(--sombra);
-      backdrop-filter: blur(14px);
+    .oculto {
+      display: none !important;
     }
 
-    header {
+    .pantalla {
+      width: min(100%, 1020px);
+    }
+
+    .tarjeta {
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      background: var(--panel);
+      box-shadow: var(--sombra);
+      backdrop-filter: blur(15px);
+    }
+
+    /* MENÚ PRINCIPAL */
+
+    .menu {
+      width: min(100%, 680px);
+      margin: auto;
+      padding: 42px;
+      border-radius: 32px;
+      text-align: center;
+      animation: aparecer 0.45s ease;
+    }
+
+    .logo {
+      display: flex;
+      width: 105px;
+      height: 105px;
+      margin: 0 auto 18px;
+      padding: 15px;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 28px;
+      background: white;
+      box-shadow: 0 12px 28px rgba(53, 109, 100, 0.22);
+    }
+
+    .logo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .logo-alternativo {
+      display: none;
+      color: var(--primario);
+      font-size: 3rem;
+    }
+
+    .menu h1 {
+      margin: 0;
+      font-size: clamp(2.3rem, 7vw, 4rem);
+      letter-spacing: -0.055em;
+    }
+
+    .menu-subtitulo {
+      max-width: 480px;
+      margin: 10px auto 30px;
+      color: var(--suave);
+      line-height: 1.55;
+    }
+
+    .menu-seccion {
+      margin-top: 26px;
+      text-align: left;
+    }
+
+    .menu-seccion h2 {
+      margin: 0 0 12px;
+      text-align: center;
+      font-size: 1rem;
+    }
+
+    .dificultades {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .dificultad-menu {
+      padding: 16px 8px;
+      border: 2px solid transparent;
+      border-radius: 16px;
+      color: var(--texto);
+      background: #f4faf8;
+      transition: transform 0.15s, border 0.15s, background 0.15s;
+    }
+
+    .dificultad-menu:hover {
+      transform: translateY(-2px);
+      background: white;
+    }
+
+    .dificultad-menu.seleccionada {
+      border-color: var(--primario);
+      color: var(--primario-oscuro);
+      background: var(--seleccion);
+    }
+
+    .dificultad-menu strong,
+    .dificultad-menu span {
+      display: block;
+    }
+
+    .dificultad-menu strong {
+      margin-bottom: 3px;
+      font-size: 1rem;
+    }
+
+    .dificultad-menu span {
+      color: var(--suave);
+      font-size: 0.72rem;
+    }
+
+    .selector-colores {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      flex-wrap: wrap;
+    }
+
+    .color {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 3px 10px rgba(40, 66, 61, 0.18);
+      transition: transform 0.15s, outline 0.15s;
+    }
+
+    .color:hover {
+      transform: scale(1.1);
+    }
+
+    .color.seleccionado {
+      outline: 3px solid var(--primario-oscuro);
+      outline-offset: 2px;
+    }
+
+    .color-personalizado {
+      width: 42px;
+      height: 42px;
+      padding: 3px;
+      border: 0;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+    }
+
+    .boton-empezar {
+      width: 100%;
+      margin-top: 30px;
+      padding: 16px;
+      border: 0;
+      border-radius: 16px;
+      color: white;
+      background: var(--primario);
+      box-shadow: 0 10px 22px rgba(53, 109, 100, 0.22);
+      font-size: 1.08rem;
+      font-weight: 800;
+      transition: transform 0.15s, background 0.15s;
+    }
+
+    .boton-empezar:hover {
+      transform: translateY(-2px);
+      background: var(--primario-oscuro);
+    }
+
+    .menu-ayuda {
+      margin: 17px 0 0;
+      color: var(--suave);
+      font-size: 0.8rem;
+    }
+
+    /* JUEGO */
+
+    .juego {
+      padding: 26px;
+      border-radius: 28px;
+      animation: aparecer 0.35s ease;
+    }
+
+    .cabecera-juego {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -65,15 +248,40 @@
       margin-bottom: 22px;
     }
 
-    h1 {
+    .titulo-juego {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .icono-cabecera {
+      width: 54px;
+      height: 54px;
+      padding: 7px;
+      border-radius: 15px;
+      background: white;
+      box-shadow: 0 5px 14px rgba(43, 88, 78, 0.14);
+      object-fit: contain;
+    }
+
+    .titulo-juego h1 {
       margin: 0;
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-size: clamp(1.7rem, 5vw, 2.6rem);
       letter-spacing: -0.04em;
     }
 
     .subtitulo {
-      margin: 4px 0 0;
+      margin: 3px 0 0;
       color: var(--suave);
+    }
+
+    .boton-menu {
+      padding: 10px 13px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--primario-oscuro);
+      background: var(--secundario);
+      font-weight: 800;
     }
 
     .estado {
@@ -92,7 +300,7 @@
     .indicador span {
       display: block;
       color: var(--suave);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
@@ -284,77 +492,25 @@
       font-size: 1.25rem;
       font-weight: 800;
       box-shadow: 0 4px 10px rgba(48, 91, 82, 0.08);
-      transition: transform 0.1s, background 0.1s;
     }
 
     .numero:hover {
-      transform: translateY(-2px);
       background: var(--seleccion);
+      transform: translateY(-2px);
     }
 
     .numero.usado {
-      opacity: 0.38;
+      opacity: 0.35;
     }
 
     .modo-notas {
       margin-bottom: 10px;
     }
 
-    .modo-notas.activo {
-      color: white;
-      background: var(--primario);
-    }
-
     .audio-control {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-    }
-
-    .colores {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 8px;
-    }
-
-    .color {
-      aspect-ratio: 1;
-      padding: 0;
-      border: 3px solid white;
-      border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(40, 66, 61, 0.18);
-      transition: transform 0.15s, outline 0.15s;
-    }
-
-    .color:hover {
-      transform: scale(1.1);
-    }
-
-    .color.seleccionado {
-      outline: 3px solid var(--primario-oscuro);
-      outline-offset: 2px;
-    }
-
-    .color-personalizado {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .color-personalizado label {
-      margin: 0;
-      flex: 1;
-    }
-
-    #colorPersonalizado {
-      width: 52px;
-      height: 35px;
-      padding: 2px;
-      border: 0;
-      border-radius: 9px;
-      background: white;
-      cursor: pointer;
     }
 
     .mensaje {
@@ -372,6 +528,8 @@
       line-height: 1.45;
     }
 
+    /* MODALES */
+
     .modal {
       position: fixed;
       inset: 0;
@@ -380,7 +538,7 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: rgba(30, 58, 52, 0.4);
+      background: rgba(30, 58, 52, 0.45);
       backdrop-filter: blur(8px);
     }
 
@@ -398,24 +556,37 @@
       animation: aparecer 0.35s ease;
     }
 
-    .modal-contenido .icono {
-      font-size: 3rem;
+    .modal-icono {
+      width: 82px;
+      height: 82px;
+      padding: 10px;
+      border-radius: 22px;
+      background: var(--secundario);
+      object-fit: contain;
     }
 
     .modal-contenido h2 {
-      margin: 10px 0 6px;
+      margin: 14px 0 6px;
       font-size: 2rem;
     }
 
     .modal-contenido p {
       color: var(--suave);
+      line-height: 1.5;
+    }
+
+    .modal-botones {
+      display: grid;
+      gap: 9px;
+      margin-top: 18px;
     }
 
     @keyframes aparecer {
       from {
         opacity: 0;
-        transform: scale(0.9) translateY(10px);
+        transform: scale(0.94) translateY(12px);
       }
+
       to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -428,12 +599,17 @@
         align-items: flex-start;
       }
 
+      .menu {
+        padding: 27px 18px;
+        border-radius: 24px;
+      }
+
       .juego {
         padding: 18px;
         border-radius: 22px;
       }
 
-      header {
+      .cabecera-juego {
         align-items: flex-start;
         flex-direction: column;
       }
@@ -463,6 +639,17 @@
     }
 
     @media (max-width: 520px) {
+      .dificultades {
+        grid-template-columns: 1fr;
+      }
+
+      .dificultad-menu {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+      }
+
       .panel {
         display: flex;
       }
@@ -479,124 +666,235 @@
         inset: 1px;
         font-size: 0.43rem;
       }
+
+      .icono-cabecera {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="juego">
-    <header>
+  <section id="pantallaMenu" class="pantalla">
+    <main class="menu tarjeta">
+      <div class="logo">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/6258/6258392.png"
+          alt="Icono de Sudoku Sereno"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+        >
+        <span class="logo-alternativo">✦</span>
+      </div>
+  <h1>Sudoku Sereno</h1>
+
+  <p class="menu-subtitulo">
+    Despeja tu mente resolviendo sudokus acompañados de música y sonidos relajantes.
+  </p>
+
+  <div class="menu-seccion">
+    <h2>Elige la dificultad</h2>
+
+    <div class="dificultades">
+      <button class="dificultad-menu" data-dificultad="facil">
+        <strong>Fácil</strong>
+        <span>36 casillas vacías</span>
+      </button>
+
+      <button class="dificultad-menu seleccionada" data-dificultad="normal">
+        <strong>Normal</strong>
+        <span>46 casillas vacías</span>
+      </button>
+
+      <button class="dificultad-menu" data-dificultad="dificil">
+        <strong>Difícil</strong>
+        <span>52 casillas vacías</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="menu-seccion">
+    <h2>Elige el color del fondo</h2>
+
+    <div class="selector-colores">
+      <button class="color seleccionado" data-color="#eef7f4" style="background:#eef7f4" aria-label="Fondo verde"></button>
+      <button class="color" data-color="#eaf3fb" style="background:#eaf3fb" aria-label="Fondo azul"></button>
+      <button class="color" data-color="#f7edf4" style="background:#f7edf4" aria-label="Fondo rosa"></button>
+      <button class="color" data-color="#f7f1df" style="background:#f7f1df" aria-label="Fondo crema"></button>
+      <button class="color" data-color="#eeeafb" style="background:#eeeafb" aria-label="Fondo violeta"></button>
+      <button class="color" data-color="#e8eeee" style="background:#e8eeee" aria-label="Fondo gris"></button>
+
+      <input
+        id="colorPersonalizado"
+        class="color-personalizado"
+        type="color"
+        value="#eef7f4"
+        aria-label="Elegir color personalizado"
+      >
+    </div>
+  </div>
+
+  <button id="empezar" class="boton-empezar">
+    Empezar partida
+  </button>
+
+  <p class="menu-ayuda">
+    Podrás usar notas, pistas, música y sonidos durante la partida.
+  </p>
+</main>
+
+  </section>
+  <section id="pantallaJuego" class="pantalla oculto">
+    <main class="juego tarjeta">
+      <header class="cabecera-juego">
+        <div class="titulo-juego">
+          <button id="volverMenu" class="boton-menu">
+            ← Menú
+          </button>
+      <img
+        class="icono-cabecera"
+        src="https://cdn-icons-png.flaticon.com/512/6258/6258392.png"
+        alt=""
+      >
+
       <div>
         <h1>Sudoku Sereno</h1>
-        <p class="subtitulo">Entrena tu mente y disfruta de un momento de calma.</p>
-      </div>
-  <div class="estado">
-    <div class="indicador">
-      <span>Tiempo</span>
-      <strong id="tiempo">00:00</strong>
-    </div>
-
-    <div class="indicador">
-      <span>Errores</span>
-      <strong><span id="errores">0</span>/3</strong>
-    </div>
-  </div>
-</header>
-
-<section class="contenido">
-  <div id="tablero" class="tablero" aria-label="Tablero de sudoku"></div>
-
-  <aside class="panel">
-    <div class="grupo">
-      <h2>Nueva partida</h2>
-
-      <label for="dificultad">Dificultad</label>
-      <select id="dificultad">
-        <option value="facil">Fácil</option>
-        <option value="normal" selected>Normal</option>
-        <option value="dificil">Difícil</option>
-      </select>
-
-      <button id="nuevo" class="boton primario" style="margin-top: 10px;">
-        Generar sudoku
-      </button>
-
-      <div class="botones">
-        <button id="comprobar" class="boton">Comprobar</button>
-        <button id="pista" class="boton">Dar pista</button>
-        <button id="borrar" class="boton">Borrar celda</button>
-        <button id="reiniciar" class="boton">Reiniciar</button>
+        <p id="nombreDificultad" class="subtitulo">
+          Dificultad normal
+        </p>
       </div>
     </div>
 
-    <div class="grupo">
-      <h2>Números y notas</h2>
-
-      <button id="modoNotas" class="boton modo-notas">
-        ✎ Notas desactivadas
-      </button>
-
-      <div id="numeros" class="numeros"></div>
-
-      <p class="instrucciones">
-        Activa las notas para colocar varios números pequeños en una casilla.
-        Las notas no cuentan como respuestas. Pulsa N para cambiar de modo.
-      </p>
-    </div>
-
-    <div class="grupo">
-      <h2>Color del fondo</h2>
-
-      <div id="colores" class="colores">
-        <button class="color seleccionado" data-color="#eef7f4" style="background:#eef7f4" aria-label="Fondo verde claro"></button>
-        <button class="color" data-color="#eaf3fb" style="background:#eaf3fb" aria-label="Fondo azul claro"></button>
-        <button class="color" data-color="#f7edf4" style="background:#f7edf4" aria-label="Fondo rosa claro"></button>
-        <button class="color" data-color="#f7f1df" style="background:#f7f1df" aria-label="Fondo crema"></button>
-        <button class="color" data-color="#eeeafb" style="background:#eeeafb" aria-label="Fondo violeta claro"></button>
-        <button class="color" data-color="#e8eeee" style="background:#e8eeee" aria-label="Fondo gris claro"></button>
+    <div class="estado">
+      <div class="indicador">
+        <span>Tiempo</span>
+        <strong id="tiempo">00:00</strong>
       </div>
 
-      <div class="color-personalizado">
-        <label for="colorPersonalizado">Color personalizado</label>
-        <input id="colorPersonalizado" type="color" value="#eef7f4">
+      <div class="indicador">
+        <span>Errores</span>
+        <strong><span id="errores">0</span>/3</strong>
       </div>
     </div>
+  </header>
 
-    <div class="grupo">
-      <h2>Ambiente relajante</h2>
+  <section class="contenido">
+    <div id="tablero" class="tablero" aria-label="Tablero de sudoku"></div>
 
-      <div class="audio-control">
-        <button id="musica" class="boton">♫ Música</button>
-        <button id="sonidos" class="boton activo">♪ Sonidos</button>
+    <aside class="panel">
+      <div class="grupo">
+        <h2>Partida</h2>
+
+        <label for="dificultadJuego">Dificultad</label>
+
+        <select id="dificultadJuego">
+          <option value="facil">Fácil</option>
+          <option value="normal">Normal</option>
+          <option value="dificil">Difícil</option>
+        </select>
+
+        <button id="nuevo" class="boton primario" style="margin-top:10px">
+          Nueva partida
+        </button>
+
+        <div class="botones">
+          <button id="comprobar" class="boton">Comprobar</button>
+          <button id="pista" class="boton">Dar pista</button>
+          <button id="borrar" class="boton">Borrar celda</button>
+          <button id="reiniciar" class="boton">Reiniciar</button>
+        </div>
       </div>
 
-      <p class="instrucciones">
-        La música y los sonidos se generan directamente en el navegador.
-      </p>
-    </div>
+      <div class="grupo">
+        <h2>Números y notas</h2>
 
-    <p id="mensaje" class="mensaje"></p>
-  </aside>
-</section>
+        <button id="modoNotas" class="boton modo-notas">
+          ✎ Notas desactivadas
+        </button>
 
-  </main>
-  <div id="modal" class="modal">
+        <div id="numeros" class="numeros"></div>
+
+        <p class="instrucciones">
+          Las notas son números pequeños que no cuentan como respuestas.
+          Pulsa N para activar o desactivar este modo.
+        </p>
+      </div>
+
+      <div class="grupo">
+        <h2>Ambiente relajante</h2>
+
+        <div class="audio-control">
+          <button id="musica" class="boton">♫ Música</button>
+          <button id="sonidos" class="boton activo">♪ Sonidos</button>
+        </div>
+      </div>
+
+      <p id="mensaje" class="mensaje"></p>
+    </aside>
+  </section>
+</main>
+
+  </section>
+  <div id="modalVictoria" class="modal">
     <div class="modal-contenido">
-      <div class="icono">🌿</div>
-      <h2>¡Sudoku completado!</h2>
-      <p id="resultadoFinal"></p>
-      <button id="otraPartida" class="boton primario">Jugar otra partida</button>
-    </div>
+      <img
+        class="modal-icono"
+        src="https://cdn-icons-png.flaticon.com/512/6258/6258392.png"
+        alt=""
+      >
+  <h2>¡Sudoku completado!</h2>
+  <p id="resultadoFinal"></p>
+
+  <div class="modal-botones">
+    <button id="otraPartida" class="boton primario">
+      Jugar otra partida
+    </button>
+
+    <button id="menuDesdeVictoria" class="boton">
+      Volver al menú
+    </button>
+  </div>
+</div>
+
+  </div>
+  <div id="modalSalir" class="modal">
+    <div class="modal-contenido">
+      <img
+        class="modal-icono"
+        src="https://cdn-icons-png.flaticon.com/512/6258/6258392.png"
+        alt=""
+      >
+  <h2>¿Volver al menú?</h2>
+
+  <p>
+    Se cerrará la partida actual y perderás el progreso de este sudoku.
+  </p>
+
+  <div class="modal-botones">
+    <button id="confirmarSalida" class="boton primario">
+      Volver al menú
+    </button>
+
+    <button id="cancelarSalida" class="boton">
+      Seguir jugando
+    </button>
+  </div>
+</div>
+
   </div>
   <script>
+    const pantallaMenu = document.getElementById("pantallaMenu");
+    const pantallaJuego = document.getElementById("pantallaJuego");
     const tableroElemento = document.getElementById("tablero");
-    const dificultadElemento = document.getElementById("dificultad");
+    const dificultadJuego = document.getElementById("dificultadJuego");
+    const nombreDificultad = document.getElementById("nombreDificultad");
     const tiempoElemento = document.getElementById("tiempo");
     const erroresElemento = document.getElementById("errores");
     const mensajeElemento = document.getElementById("mensaje");
-    const modalElemento = document.getElementById("modal");
-    const resultadoFinal = document.getElementById("resultadoFinal");
     const botonNotas = document.getElementById("modoNotas");
+    const modalVictoria = document.getElementById("modalVictoria");
+    const modalSalir = document.getElementById("modalSalir");
+    const resultadoFinal = document.getElementById("resultadoFinal");
 
+    let dificultadSeleccionada = "normal";
     let solucion = [];
     let puzzleInicial = [];
     let tableroActual = [];
@@ -618,6 +916,12 @@
       facil: 36,
       normal: 46,
       dificil: 52
+    };
+
+    const nombresDificultad = {
+      facil: "Fácil",
+      normal: "Normal",
+      dificil: "Difícil"
     };
 
     function crearMatrizVacia() {
@@ -751,12 +1055,38 @@
       };
     }
 
+    function abrirJuego() {
+      pantallaMenu.classList.add("oculto");
+      pantallaJuego.classList.remove("oculto");
+
+      dificultadJuego.value = dificultadSeleccionada;
+      iniciarPartida();
+    }
+
+    function mostrarMenu() {
+      clearInterval(temporizador);
+      partidaTerminada = true;
+
+      modalVictoria.classList.remove("visible");
+      modalSalir.classList.remove("visible");
+      pantallaJuego.classList.add("oculto");
+      pantallaMenu.classList.remove("oculto");
+    }
+
     function iniciarPartida() {
+      dificultadSeleccionada = dificultadJuego.value;
+
+      nombreDificultad.textContent =
+        `Dificultad ${nombresDificultad[dificultadSeleccionada].toLowerCase()}`;
+
       mensajeElemento.textContent = "Generando un nuevo sudoku…";
+      tableroElemento.innerHTML = "";
       partidaTerminada = false;
 
+      clearInterval(temporizador);
+
       setTimeout(() => {
-        const generado = generarPuzzle(dificultadElemento.value);
+        const generado = generarPuzzle(dificultadSeleccionada);
 
         solucion = generado.solucion;
         puzzleInicial = generado.puzzle.map(fila => [...fila]);
@@ -768,18 +1098,17 @@
         segundos = 0;
         modoNotasActivo = false;
 
-        actualizarBotonNotas();
         erroresElemento.textContent = "0";
         tiempoElemento.textContent = "00:00";
         mensajeElemento.textContent = "";
-        modalElemento.classList.remove("visible");
+        modalVictoria.classList.remove("visible");
 
-        clearInterval(temporizador);
-        temporizador = setInterval(actualizarTiempo, 1000);
-
+        actualizarBotonNotas();
         dibujarTablero();
+
+        temporizador = setInterval(actualizarTiempo, 1000);
         reproducirSonido("inicio");
-      }, 30);
+      }, 40);
     }
 
     function dibujarTablero() {
@@ -820,10 +1149,6 @@
         elementoValor.className = "valor-celda";
         elementoValor.textContent = valor;
         celda.appendChild(elementoValor);
-        celda.setAttribute(
-          "aria-label",
-          `Fila ${fila + 1}, columna ${columna + 1}, número ${valor}`
-        );
         return;
       }
 
@@ -833,19 +1158,13 @@
       for (let numero = 1; numero <= 9; numero++) {
         const nota = document.createElement("span");
         nota.className = "nota";
-        nota.textContent = notas[fila][columna].has(numero) ? numero : "";
+        nota.textContent =
+          notas[fila][columna].has(numero) ? numero : "";
+
         contenedorNotas.appendChild(nota);
       }
 
       celda.appendChild(contenedorNotas);
-
-      const notasActivas = [...notas[fila][columna]].sort().join(", ");
-      celda.setAttribute(
-        "aria-label",
-        `Fila ${fila + 1}, columna ${columna + 1}${
-          notasActivas ? `, notas ${notasActivas}` : ", vacía"
-        }`
-      );
     }
 
     function seleccionarCelda(fila, columna) {
@@ -866,6 +1185,7 @@
 
         const fila = Number(celda.dataset.fila);
         const columna = Number(celda.dataset.columna);
+
         const mismaCaja =
           Math.floor(fila / 3) === Math.floor(seleccion.fila / 3) &&
           Math.floor(columna / 3) === Math.floor(seleccion.columna / 3);
@@ -888,7 +1208,10 @@
           celda.classList.add("igual");
         }
 
-        if (fila === seleccion.fila && columna === seleccion.columna) {
+        if (
+          fila === seleccion.fila &&
+          columna === seleccion.columna
+        ) {
           celda.classList.add("seleccionada");
         }
       });
@@ -902,10 +1225,10 @@
 
     function actualizarBotonNotas() {
       botonNotas.classList.toggle("activo", modoNotasActivo);
+
       botonNotas.textContent = modoNotasActivo
         ? "✎ Notas activadas"
         : "✎ Notas desactivadas";
-      botonNotas.setAttribute("aria-pressed", String(modoNotasActivo));
     }
 
     function introducirNumero(numero) {
@@ -916,6 +1239,7 @@
       if (puzzleInicial[fila][columna] !== 0) {
         mensajeElemento.textContent =
           "Ese número forma parte del sudoku.";
+
         reproducirSonido("error");
         return;
       }
@@ -931,14 +1255,14 @@
       if (numero === 0) {
         notas[fila][columna].clear();
         actualizarCelda(fila, columna);
-        mensajeElemento.textContent = "Notas borradas.";
         reproducirSonido("borrar");
         return;
       }
 
       if (tableroActual[fila][columna] !== 0) {
         mensajeElemento.textContent =
-          "Borra primero la respuesta para añadir notas.";
+          "Borra la respuesta antes de añadir notas.";
+
         reproducirSonido("error");
         return;
       }
@@ -950,7 +1274,7 @@
       }
 
       actualizarCelda(fila, columna);
-      mensajeElemento.textContent = "Nota actualizada.";
+      mensajeElemento.textContent = "";
       reproducirSonido("nota");
     }
 
@@ -964,13 +1288,13 @@
 
         actualizarCelda(fila, columna);
         actualizarEstadoNumeros();
-        mensajeElemento.textContent = "";
         reproducirSonido("borrar");
         return;
       }
 
       tableroActual[fila][columna] = numero;
       notas[fila][columna].clear();
+
       actualizarCelda(fila, columna);
 
       if (numero !== solucion[fila][columna]) {
@@ -982,13 +1306,8 @@
           "Ese número no encaja. Respira e inténtalo de nuevo.";
 
         reproducirSonido("error");
-
-        if (errores >= 3) {
-          mensajeElemento.textContent =
-            "Has alcanzado 3 errores, pero puedes seguir jugando con calma.";
-        }
       } else {
-        eliminarNumeroDeNotasRelacionadas(fila, columna, numero);
+        eliminarNotaRelacionada(fila, columna, numero);
         mensajeElemento.textContent = "";
         reproducirSonido("acierto");
       }
@@ -998,7 +1317,7 @@
       comprobarVictoria();
     }
 
-    function eliminarNumeroDeNotasRelacionadas(fila, columna, numero) {
+    function eliminarNotaRelacionada(fila, columna, numero) {
       const inicioFila = Math.floor(fila / 3) * 3;
       const inicioColumna = Math.floor(columna / 3) * 3;
 
@@ -1013,31 +1332,20 @@
         }
       }
 
-      for (let i = 0; i < 9; i++) {
-        actualizarCelda(fila, i);
-        actualizarCelda(i, columna);
-      }
-
-      for (let f = inicioFila; f < inicioFila + 3; f++) {
-        for (let c = inicioColumna; c < inicioColumna + 3; c++) {
-          actualizarCelda(f, c);
-        }
-      }
+      dibujarTablero();
     }
 
     function actualizarCelda(fila, columna) {
-      const indice = fila * 9 + columna;
-      const celda = tableroElemento.children[indice];
+      const celda = tableroElemento.children[fila * 9 + columna];
 
-      if (!celda) return;
-
-      celda.classList.remove("error");
-      actualizarContenidoCelda(celda, fila, columna);
+      if (celda) {
+        celda.classList.remove("error");
+        actualizarContenidoCelda(celda, fila, columna);
+      }
     }
 
     function marcarError(fila, columna) {
-      const indice = fila * 9 + columna;
-      const celda = tableroElemento.children[indice];
+      const celda = tableroElemento.children[fila * 9 + columna];
 
       celda.classList.add("error");
 
@@ -1047,19 +1355,15 @@
     }
 
     function actualizarEstadoNumeros() {
-      const botones = document.querySelectorAll(".numero");
-
-      botones.forEach((boton, indice) => {
+      document.querySelectorAll(".numero").forEach((boton, indice) => {
         const numero = indice + 1;
         let cantidad = 0;
 
-        for (let fila = 0; fila < 9; fila++) {
-          for (let columna = 0; columna < 9; columna++) {
-            if (tableroActual[fila][columna] === numero) {
-              cantidad++;
-            }
-          }
-        }
+        tableroActual.forEach(fila => {
+          fila.forEach(valor => {
+            if (valor === numero) cantidad++;
+          });
+        });
 
         boton.classList.toggle("usado", cantidad >= 9);
       });
@@ -1119,7 +1423,7 @@
         }
       }
 
-      if (candidatas.length === 0) {
+      if (!candidatas.length) {
         comprobarVictoria();
         return;
       }
@@ -1138,23 +1442,18 @@
           candidatas[Math.floor(Math.random() * candidatas.length)];
       }
 
-      const numeroCorrecto =
+      const numero =
         solucion[candidata.fila][candidata.columna];
 
-      tableroActual[candidata.fila][candidata.columna] = numeroCorrecto;
+      tableroActual[candidata.fila][candidata.columna] = numero;
       notas[candidata.fila][candidata.columna].clear();
-
       seleccion = candidata;
 
-      eliminarNumeroDeNotasRelacionadas(
+      eliminarNotaRelacionada(
         candidata.fila,
         candidata.columna,
-        numeroCorrecto
+        numero
       );
-
-      actualizarCelda(candidata.fila, candidata.columna);
-      actualizarResaltado();
-      actualizarEstadoNumeros();
 
       mensajeElemento.textContent =
         "Pista colocada. Sigue a tu ritmo.";
@@ -1167,16 +1466,14 @@
       for (let fila = 0; fila < 9; fila++) {
         for (let columna = 0; columna < 9; columna++) {
           if (
-            tableroActual[fila][columna] !==
-            solucion[fila][columna]
+            tableroActual[fila][columna] !== solucion[fila][columna]
           ) {
-            return false;
+            return;
           }
         }
       }
 
       completarPartida();
-      return true;
     }
 
     function completarPartida() {
@@ -1185,40 +1482,34 @@
       partidaTerminada = true;
       clearInterval(temporizador);
 
-      const dificultad =
-        dificultadElemento.options[
-          dificultadElemento.selectedIndex
-        ].text;
-
       resultadoFinal.textContent =
-        `Completaste el nivel ${dificultad} en ` +
-        `${formatearTiempo(segundos)} con ${errores} ` +
+        `Completaste el nivel ${nombresDificultad[dificultadSeleccionada]} ` +
+        `en ${formatearTiempo(segundos)} con ${errores} ` +
         `${errores === 1 ? "error" : "errores"}.`;
 
-      modalElemento.classList.add("visible");
+      modalVictoria.classList.add("visible");
       reproducirSonido("victoria");
     }
 
     function reiniciarPartida() {
       tableroActual = puzzleInicial.map(fila => [...fila]);
       notas = crearMatrizDeNotas();
-
       seleccion = null;
       errores = 0;
       segundos = 0;
       partidaTerminada = false;
       modoNotasActivo = false;
 
-      actualizarBotonNotas();
       erroresElemento.textContent = "0";
       tiempoElemento.textContent = "00:00";
       mensajeElemento.textContent = "";
-      modalElemento.classList.remove("visible");
+
+      actualizarBotonNotas();
+      dibujarTablero();
 
       clearInterval(temporizador);
       temporizador = setInterval(actualizarTiempo, 1000);
 
-      dibujarTablero();
       reproducirSonido("inicio");
     }
 
@@ -1229,9 +1520,9 @@
       }
     }
 
-    function formatearTiempo(totalSegundos) {
-      const minutos = Math.floor(totalSegundos / 60);
-      const segundosRestantes = totalSegundos % 60;
+    function formatearTiempo(total) {
+      const minutos = Math.floor(total / 60);
+      const segundosRestantes = total % 60;
 
       return (
         String(minutos).padStart(2, "0") +
@@ -1248,54 +1539,65 @@
 
         boton.className = "numero";
         boton.textContent = numero;
-        boton.setAttribute("aria-label", `Introducir número ${numero}`);
         boton.addEventListener("click", () => introducirNumero(numero));
 
         contenedor.appendChild(boton);
       }
     }
 
-    function cambiarFondo(color, botonSeleccionado = null) {
+    function cambiarFondo(color, boton = null) {
       document.documentElement.style.setProperty("--fondo", color);
       document.getElementById("colorPersonalizado").value = color;
 
-      document.querySelectorAll(".color").forEach(boton => {
-        boton.classList.toggle(
+      document.querySelectorAll(".color").forEach(elemento => {
+        elemento.classList.toggle(
           "seleccionado",
-          boton === botonSeleccionado
+          elemento === boton
         );
       });
 
       try {
-        localStorage.setItem("sudoku-color-fondo", color);
+        localStorage.setItem("sudoku-color", color);
       } catch (_) {}
     }
 
-    function prepararSelectorDeFondo() {
-      const botonesColor = document.querySelectorAll(".color");
-      const selectorPersonalizado =
-        document.getElementById("colorPersonalizado");
+    function prepararMenu() {
+      document.querySelectorAll(".dificultad-menu").forEach(boton => {
+        boton.addEventListener("click", () => {
+          dificultadSeleccionada = boton.dataset.dificultad;
 
-      botonesColor.forEach(boton => {
+          document
+            .querySelectorAll(".dificultad-menu")
+            .forEach(elemento => {
+              elemento.classList.toggle(
+                "seleccionada",
+                elemento === boton
+              );
+            });
+        });
+      });
+
+      document.querySelectorAll(".color").forEach(boton => {
         boton.addEventListener("click", () => {
           cambiarFondo(boton.dataset.color, boton);
         });
       });
 
-      selectorPersonalizado.addEventListener("input", evento => {
-        cambiarFondo(evento.target.value);
-      });
+      document
+        .getElementById("colorPersonalizado")
+        .addEventListener("input", evento => {
+          cambiarFondo(evento.target.value);
+        });
 
       try {
-        const colorGuardado =
-          localStorage.getItem("sudoku-color-fondo");
+        const colorGuardado = localStorage.getItem("sudoku-color");
 
         if (colorGuardado) {
-          const botonCoincidente = [...botonesColor].find(
-            boton => boton.dataset.color === colorGuardado
-          );
+          const boton = [
+            ...document.querySelectorAll(".color")
+          ].find(elemento => elemento.dataset.color === colorGuardado);
 
-          cambiarFondo(colorGuardado, botonCoincidente || null);
+          cambiarFondo(colorGuardado, boton || null);
         }
       } catch (_) {}
     }
@@ -1327,7 +1629,7 @@
       const ahora = audioContexto.currentTime;
 
       oscilador.type = tipo;
-      oscilador.frequency.setValueAtTime(frecuencia, ahora);
+      oscilador.frequency.value = frecuencia;
 
       ganancia.gain.setValueAtTime(0.0001, ahora);
       ganancia.gain.exponentialRampToValueAtTime(
@@ -1351,37 +1653,23 @@
 
       const sonidos = {
         seleccion: () => tocarNota(523.25, 0.12, 0.018),
-
         nota: () => tocarNota(587.33, 0.1, 0.014),
+        error: () => tocarNota(196, 0.35, 0.025, "triangle"),
+        borrar: () => tocarNota(392, 0.15, 0.02),
 
         acierto: () => {
           tocarNota(659.25, 0.25, 0.03);
-          setTimeout(
-            () => tocarNota(783.99, 0.3, 0.025),
-            90
-          );
+          setTimeout(() => tocarNota(783.99, 0.3, 0.025), 90);
         },
-
-        error: () =>
-          tocarNota(196, 0.35, 0.025, "triangle"),
-
-        borrar: () =>
-          tocarNota(392, 0.15, 0.02),
 
         pista: () => {
           tocarNota(523.25, 0.35, 0.025);
-          setTimeout(
-            () => tocarNota(659.25, 0.4, 0.025),
-            120
-          );
+          setTimeout(() => tocarNota(659.25, 0.4, 0.025), 120);
         },
 
         inicio: () => {
           tocarNota(392, 0.3, 0.025);
-          setTimeout(
-            () => tocarNota(523.25, 0.45, 0.025),
-            130
-          );
+          setTimeout(() => tocarNota(523.25, 0.45, 0.025), 130);
         },
 
         victoria: () => {
@@ -1459,20 +1747,14 @@
 
       if (musicaActiva) {
         tocarAcordeAmbiental();
-        intervaloMusica = setInterval(
-          tocarAcordeAmbiental,
-          6200
-        );
+        intervaloMusica = setInterval(tocarAcordeAmbiental, 6200);
       } else {
         clearInterval(intervaloMusica);
-        intervaloMusica = null;
 
         nodosMusica.forEach(nodo => {
           try {
-            if (typeof nodo.stop === "function") nodo.stop();
-            if (typeof nodo.disconnect === "function") {
-              nodo.disconnect();
-            }
+            nodo.stop?.();
+            nodo.disconnect?.();
           } catch (_) {}
         });
 
@@ -1490,6 +1772,10 @@
         ? "♪ Sonidos activados"
         : "♪ Sonidos";
     }
+
+    document
+      .getElementById("empezar")
+      .addEventListener("click", abrirJuego);
 
     document
       .getElementById("nuevo")
@@ -1520,12 +1806,38 @@
       .addEventListener("click", alternarSonidos);
 
     document
+      .getElementById("volverMenu")
+      .addEventListener("click", () => {
+        modalSalir.classList.add("visible");
+      });
+
+    document
+      .getElementById("cancelarSalida")
+      .addEventListener("click", () => {
+        modalSalir.classList.remove("visible");
+      });
+
+    document
+      .getElementById("confirmarSalida")
+      .addEventListener("click", mostrarMenu);
+
+    document
+      .getElementById("menuDesdeVictoria")
+      .addEventListener("click", mostrarMenu);
+
+    document
       .getElementById("otraPartida")
       .addEventListener("click", iniciarPartida);
 
     botonNotas.addEventListener("click", alternarModoNotas);
 
+    dificultadJuego.addEventListener("change", () => {
+      dificultadSeleccionada = dificultadJuego.value;
+    });
+
     document.addEventListener("keydown", evento => {
+      if (pantallaJuego.classList.contains("oculto")) return;
+
       if (
         evento.target.tagName === "SELECT" ||
         evento.target.tagName === "INPUT"
@@ -1576,8 +1888,12 @@
     });
 
     crearBotonesNumeros();
-    prepararSelectorDeFondo();
-    iniciarPartida();
+    prepararMenu();
+
+    /*
+      El juego permanece en el menú hasta que el usuario
+      pulsa el botón "Empezar partida".
+    */
   </script>
 </body>
 </html>
