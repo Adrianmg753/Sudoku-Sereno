@@ -67,15 +67,15 @@
       backdrop-filter: blur(15px);
     }
 
-    /* MENÚ PRINCIPAL */
+    /* MENÚ */
 
     .menu {
-      width: min(100%, 680px);
+      width: min(100%, 700px);
       margin: auto;
-      padding: 42px;
+      padding: 40px;
       border-radius: 32px;
       text-align: center;
-      animation: aparecer 0.45s ease;
+      animation: aparecer 0.4s ease;
     }
 
     .logo {
@@ -93,7 +93,6 @@
     }
 
     .logo img {
-      display: block;
       width: 100%;
       height: 100%;
       object-fit: contain;
@@ -112,31 +111,36 @@
     }
 
     .menu-subtitulo {
-      max-width: 480px;
-      margin: 10px auto 30px;
+      max-width: 500px;
+      margin: 10px auto 28px;
       color: var(--suave);
       line-height: 1.55;
     }
 
     .menu-seccion {
-      margin-top: 26px;
-      text-align: left;
+      margin-top: 24px;
     }
 
     .menu-seccion h2 {
       margin: 0 0 12px;
-      text-align: center;
       font-size: 1rem;
     }
 
-    .dificultades {
+    .opciones {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
     }
 
-    .dificultad-menu {
-      padding: 16px 8px;
+    .dificultades {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .modos-error {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .opcion-menu {
+      padding: 15px 10px;
       border: 2px solid transparent;
       border-radius: 16px;
       color: var(--texto);
@@ -144,30 +148,29 @@
       transition: transform 0.15s, border 0.15s, background 0.15s;
     }
 
-    .dificultad-menu:hover {
+    .opcion-menu:hover {
       transform: translateY(-2px);
       background: white;
     }
 
-    .dificultad-menu.seleccionada {
+    .opcion-menu.seleccionada {
       border-color: var(--primario);
       color: var(--primario-oscuro);
       background: var(--seleccion);
     }
 
-    .dificultad-menu strong,
-    .dificultad-menu span {
+    .opcion-menu strong,
+    .opcion-menu span {
       display: block;
     }
 
-    .dificultad-menu strong {
-      margin-bottom: 3px;
-      font-size: 1rem;
+    .opcion-menu strong {
+      margin-bottom: 4px;
     }
 
-    .dificultad-menu span {
+    .opcion-menu span {
       color: var(--suave);
-      font-size: 0.72rem;
+      font-size: 0.74rem;
     }
 
     .selector-colores {
@@ -227,7 +230,7 @@
     }
 
     .menu-ayuda {
-      margin: 17px 0 0;
+      margin: 16px 0 0;
       color: var(--suave);
       font-size: 0.8rem;
     }
@@ -251,7 +254,7 @@
     .titulo-juego {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 13px;
     }
 
     .icono-cabecera {
@@ -307,6 +310,12 @@
 
     .indicador strong {
       font-size: 1.1rem;
+    }
+
+    .indicador.peligro {
+      color: #9c4141;
+      background: #ffe5e5;
+      animation: temblar 0.3s ease;
     }
 
     .contenido {
@@ -432,10 +441,14 @@
 
     label {
       display: block;
-      margin-bottom: 6px;
+      margin: 10px 0 6px;
       color: var(--suave);
       font-size: 0.82rem;
       font-weight: 700;
+    }
+
+    label:first-of-type {
+      margin-top: 0;
     }
 
     select,
@@ -538,7 +551,7 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: rgba(30, 58, 52, 0.45);
+      background: rgba(30, 58, 52, 0.48);
       backdrop-filter: blur(8px);
     }
 
@@ -563,6 +576,11 @@
       border-radius: 22px;
       background: var(--secundario);
       object-fit: contain;
+    }
+
+    .modal-perdida .modal-icono {
+      background: #ffeaea;
+      filter: grayscale(0.35);
     }
 
     .modal-contenido h2 {
@@ -590,6 +608,20 @@
       to {
         opacity: 1;
         transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes temblar {
+      0%, 100% {
+        transform: translateX(0);
+      }
+
+      30% {
+        transform: translateX(-4px);
+      }
+
+      70% {
+        transform: translateX(4px);
       }
     }
 
@@ -639,11 +671,12 @@
     }
 
     @media (max-width: 520px) {
-      .dificultades {
+      .dificultades,
+      .modos-error {
         grid-template-columns: 1fr;
       }
 
-      .dificultad-menu {
+      .opcion-menu {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -652,6 +685,10 @@
 
       .panel {
         display: flex;
+      }
+
+      .icono-cabecera {
+        display: none;
       }
 
       .tablero {
@@ -666,14 +703,11 @@
         inset: 1px;
         font-size: 0.43rem;
       }
-
-      .icono-cabecera {
-        display: none;
-      }
     }
   </style>
 </head>
 <body>
+  <!-- MENÚ PRINCIPAL -->
   <section id="pantallaMenu" class="pantalla">
     <main class="menu tarjeta">
       <div class="logo">
@@ -693,20 +727,36 @@
   <div class="menu-seccion">
     <h2>Elige la dificultad</h2>
 
-    <div class="dificultades">
-      <button class="dificultad-menu" data-dificultad="facil">
+    <div class="opciones dificultades">
+      <button class="opcion-menu dificultad-menu" data-dificultad="facil">
         <strong>Fácil</strong>
         <span>36 casillas vacías</span>
       </button>
 
-      <button class="dificultad-menu seleccionada" data-dificultad="normal">
+      <button class="opcion-menu dificultad-menu seleccionada" data-dificultad="normal">
         <strong>Normal</strong>
         <span>46 casillas vacías</span>
       </button>
 
-      <button class="dificultad-menu" data-dificultad="dificil">
+      <button class="opcion-menu dificultad-menu" data-dificultad="dificil">
         <strong>Difícil</strong>
         <span>52 casillas vacías</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="menu-seccion">
+    <h2>Elige el modo de errores</h2>
+
+    <div class="opciones modos-error">
+      <button class="opcion-menu modo-error-menu seleccionada" data-modo="limite">
+        <strong>5 fallos</strong>
+        <span>Pierdes al cometer el quinto fallo</span>
+      </button>
+
+      <button class="opcion-menu modo-error-menu" data-modo="sin-limite">
+        <strong>Sin límite</strong>
+        <span>Los fallos se cuentan, pero no pierdes</span>
       </button>
     </div>
   </div>
@@ -742,6 +792,7 @@
 </main>
 
   </section>
+  <!-- PANTALLA DEL JUEGO -->
   <section id="pantallaJuego" class="pantalla oculto">
     <main class="juego tarjeta">
       <header class="cabecera-juego">
@@ -757,8 +808,8 @@
 
       <div>
         <h1>Sudoku Sereno</h1>
-        <p id="nombreDificultad" class="subtitulo">
-          Dificultad normal
+        <p id="descripcionPartida" class="subtitulo">
+          Dificultad normal · Máximo 5 fallos
         </p>
       </div>
     </div>
@@ -769,9 +820,9 @@
         <strong id="tiempo">00:00</strong>
       </div>
 
-      <div class="indicador">
+      <div id="indicadorErrores" class="indicador">
         <span>Errores</span>
-        <strong><span id="errores">0</span>/3</strong>
+        <strong id="erroresTexto">0/5</strong>
       </div>
     </div>
   </header>
@@ -791,6 +842,13 @@
           <option value="dificil">Difícil</option>
         </select>
 
+        <label for="modoErroresJuego">Modo de errores</label>
+
+        <select id="modoErroresJuego">
+          <option value="limite">Máximo 5 fallos</option>
+          <option value="sin-limite">Sin límite de fallos</option>
+        </select>
+
         <button id="nuevo" class="boton primario" style="margin-top:10px">
           Nueva partida
         </button>
@@ -801,6 +859,10 @@
           <button id="borrar" class="boton">Borrar celda</button>
           <button id="reiniciar" class="boton">Reiniciar</button>
         </div>
+
+        <p class="instrucciones">
+          Los cambios de dificultad o modo se aplican al pulsar “Nueva partida”.
+        </p>
       </div>
 
       <div class="grupo">
@@ -833,6 +895,7 @@
 </main>
 
   </section>
+  <!-- VICTORIA -->
   <div id="modalVictoria" class="modal">
     <div class="modal-contenido">
       <img
@@ -855,6 +918,37 @@
 </div>
 
   </div>
+  <!-- DERROTA -->
+  <div id="modalDerrota" class="modal">
+    <div class="modal-contenido modal-perdida">
+      <img
+        class="modal-icono"
+        src="https://cdn-icons-png.flaticon.com/512/6258/6258392.png"
+        alt=""
+      >
+  <h2>Partida terminada</h2>
+
+  <p>
+    Has alcanzado el límite de 5 fallos. Puedes volver a intentar este sudoku o empezar uno nuevo.
+  </p>
+
+  <div class="modal-botones">
+    <button id="reintentarDerrota" class="boton primario">
+      Reintentar sudoku
+    </button>
+
+    <button id="nuevoDesdeDerrota" class="boton">
+      Generar otro sudoku
+    </button>
+
+    <button id="menuDesdeDerrota" class="boton">
+      Volver al menú
+    </button>
+  </div>
+</div>
+
+  </div>
+  <!-- SALIR -->
   <div id="modalSalir" class="modal">
     <div class="modal-contenido">
       <img
@@ -885,16 +979,23 @@
     const pantallaJuego = document.getElementById("pantallaJuego");
     const tableroElemento = document.getElementById("tablero");
     const dificultadJuego = document.getElementById("dificultadJuego");
-    const nombreDificultad = document.getElementById("nombreDificultad");
+    const modoErroresJuego = document.getElementById("modoErroresJuego");
+    const descripcionPartida = document.getElementById("descripcionPartida");
     const tiempoElemento = document.getElementById("tiempo");
-    const erroresElemento = document.getElementById("errores");
+    const erroresTexto = document.getElementById("erroresTexto");
+    const indicadorErrores = document.getElementById("indicadorErrores");
     const mensajeElemento = document.getElementById("mensaje");
     const botonNotas = document.getElementById("modoNotas");
     const modalVictoria = document.getElementById("modalVictoria");
+    const modalDerrota = document.getElementById("modalDerrota");
     const modalSalir = document.getElementById("modalSalir");
     const resultadoFinal = document.getElementById("resultadoFinal");
 
     let dificultadSeleccionada = "normal";
+    let modoErroresSeleccionado = "limite";
+    let dificultadActual = "normal";
+    let modoErroresActual = "limite";
+
     let solucion = [];
     let puzzleInicial = [];
     let tableroActual = [];
@@ -1060,6 +1161,8 @@
       pantallaJuego.classList.remove("oculto");
 
       dificultadJuego.value = dificultadSeleccionada;
+      modoErroresJuego.value = modoErroresSeleccionado;
+
       iniciarPartida();
     }
 
@@ -1067,26 +1170,35 @@
       clearInterval(temporizador);
       partidaTerminada = true;
 
-      modalVictoria.classList.remove("visible");
-      modalSalir.classList.remove("visible");
+      cerrarModales();
       pantallaJuego.classList.add("oculto");
       pantallaMenu.classList.remove("oculto");
     }
 
-    function iniciarPartida() {
-      dificultadSeleccionada = dificultadJuego.value;
+    function cerrarModales() {
+      modalVictoria.classList.remove("visible");
+      modalDerrota.classList.remove("visible");
+      modalSalir.classList.remove("visible");
+    }
 
-      nombreDificultad.textContent =
-        `Dificultad ${nombresDificultad[dificultadSeleccionada].toLowerCase()}`;
+    function iniciarPartida() {
+      dificultadActual = dificultadJuego.value;
+      modoErroresActual = modoErroresJuego.value;
+
+      dificultadSeleccionada = dificultadActual;
+      modoErroresSeleccionado = modoErroresActual;
+
+      actualizarDescripcionPartida();
 
       mensajeElemento.textContent = "Generando un nuevo sudoku…";
       tableroElemento.innerHTML = "";
       partidaTerminada = false;
 
       clearInterval(temporizador);
+      cerrarModales();
 
       setTimeout(() => {
-        const generado = generarPuzzle(dificultadSeleccionada);
+        const generado = generarPuzzle(dificultadActual);
 
         solucion = generado.solucion;
         puzzleInicial = generado.puzzle.map(fila => [...fila]);
@@ -1098,17 +1210,39 @@
         segundos = 0;
         modoNotasActivo = false;
 
-        erroresElemento.textContent = "0";
         tiempoElemento.textContent = "00:00";
         mensajeElemento.textContent = "";
-        modalVictoria.classList.remove("visible");
 
+        actualizarIndicadorErrores();
         actualizarBotonNotas();
         dibujarTablero();
 
         temporizador = setInterval(actualizarTiempo, 1000);
         reproducirSonido("inicio");
       }, 40);
+    }
+
+    function actualizarDescripcionPartida() {
+      const textoModo =
+        modoErroresActual === "limite"
+          ? "Máximo 5 fallos"
+          : "Fallos sin límite";
+
+      descripcionPartida.textContent =
+        `Dificultad ${nombresDificultad[dificultadActual].toLowerCase()} · ${textoModo}`;
+    }
+
+    function actualizarIndicadorErrores() {
+      if (modoErroresActual === "limite") {
+        erroresTexto.textContent = `${errores}/5`;
+      } else {
+        erroresTexto.textContent = errores;
+      }
+
+      indicadorErrores.classList.toggle(
+        "peligro",
+        modoErroresActual === "limite" && errores >= 4
+      );
     }
 
     function dibujarTablero() {
@@ -1218,6 +1352,8 @@
     }
 
     function alternarModoNotas() {
+      if (partidaTerminada) return;
+
       modoNotasActivo = !modoNotasActivo;
       actualizarBotonNotas();
       reproducirSonido("seleccion");
@@ -1299,13 +1435,23 @@
 
       if (numero !== solucion[fila][columna]) {
         errores++;
-        erroresElemento.textContent = errores;
+        actualizarIndicadorErrores();
         marcarError(fila, columna);
-
-        mensajeElemento.textContent =
-          "Ese número no encaja. Respira e inténtalo de nuevo.";
-
         reproducirSonido("error");
+
+        if (modoErroresActual === "limite" && errores >= 5) {
+          mensajeElemento.textContent = "Has alcanzado el límite de fallos.";
+          perderPartida();
+          return;
+        }
+
+        if (modoErroresActual === "limite" && errores === 4) {
+          mensajeElemento.textContent =
+            "Cuidado: te queda un fallo antes de perder.";
+        } else {
+          mensajeElemento.textContent =
+            "Ese número no encaja. Respira e inténtalo de nuevo.";
+        }
       } else {
         eliminarNotaRelacionada(fila, columna, numero);
         mensajeElemento.textContent = "";
@@ -1315,6 +1461,16 @@
       actualizarEstadoNumeros();
       actualizarResaltado();
       comprobarVictoria();
+    }
+
+    function perderPartida() {
+      partidaTerminada = true;
+      clearInterval(temporizador);
+
+      setTimeout(() => {
+        modalDerrota.classList.add("visible");
+        reproducirSonido("derrota");
+      }, 350);
     }
 
     function eliminarNotaRelacionada(fila, columna, numero) {
@@ -1370,6 +1526,8 @@
     }
 
     function comprobarTablero() {
+      if (partidaTerminada) return;
+
       let vacias = 0;
       let incorrectas = 0;
 
@@ -1463,6 +1621,8 @@
     }
 
     function comprobarVictoria() {
+      if (partidaTerminada) return;
+
       for (let fila = 0; fila < 9; fila++) {
         for (let columna = 0; columna < 9; columna++) {
           if (
@@ -1482,10 +1642,12 @@
       partidaTerminada = true;
       clearInterval(temporizador);
 
+      const textoErrores =
+        `${errores} ${errores === 1 ? "error" : "errores"}`;
+
       resultadoFinal.textContent =
-        `Completaste el nivel ${nombresDificultad[dificultadSeleccionada]} ` +
-        `en ${formatearTiempo(segundos)} con ${errores} ` +
-        `${errores === 1 ? "error" : "errores"}.`;
+        `Completaste el nivel ${nombresDificultad[dificultadActual]} ` +
+        `en ${formatearTiempo(segundos)} con ${textoErrores}.`;
 
       modalVictoria.classList.add("visible");
       reproducirSonido("victoria");
@@ -1494,16 +1656,18 @@
     function reiniciarPartida() {
       tableroActual = puzzleInicial.map(fila => [...fila]);
       notas = crearMatrizDeNotas();
+
       seleccion = null;
       errores = 0;
       segundos = 0;
       partidaTerminada = false;
       modoNotasActivo = false;
 
-      erroresElemento.textContent = "0";
       tiempoElemento.textContent = "00:00";
       mensajeElemento.textContent = "";
 
+      cerrarModales();
+      actualizarIndicadorErrores();
       actualizarBotonNotas();
       dibujarTablero();
 
@@ -1568,6 +1732,21 @@
 
           document
             .querySelectorAll(".dificultad-menu")
+            .forEach(elemento => {
+              elemento.classList.toggle(
+                "seleccionada",
+                elemento === boton
+              );
+            });
+        });
+      });
+
+      document.querySelectorAll(".modo-error-menu").forEach(boton => {
+        boton.addEventListener("click", () => {
+          modoErroresSeleccionado = boton.dataset.modo;
+
+          document
+            .querySelectorAll(".modo-error-menu")
             .forEach(elemento => {
               elemento.classList.toggle(
                 "seleccionada",
@@ -1657,19 +1836,36 @@
         error: () => tocarNota(196, 0.35, 0.025, "triangle"),
         borrar: () => tocarNota(392, 0.15, 0.02),
 
+        derrota: () => {
+          tocarNota(293.66, 0.45, 0.025, "triangle");
+
+          setTimeout(() => {
+            tocarNota(220, 0.7, 0.025, "triangle");
+          }, 220);
+        },
+
         acierto: () => {
           tocarNota(659.25, 0.25, 0.03);
-          setTimeout(() => tocarNota(783.99, 0.3, 0.025), 90);
+
+          setTimeout(() => {
+            tocarNota(783.99, 0.3, 0.025);
+          }, 90);
         },
 
         pista: () => {
           tocarNota(523.25, 0.35, 0.025);
-          setTimeout(() => tocarNota(659.25, 0.4, 0.025), 120);
+
+          setTimeout(() => {
+            tocarNota(659.25, 0.4, 0.025);
+          }, 120);
         },
 
         inicio: () => {
           tocarNota(392, 0.3, 0.025);
-          setTimeout(() => tocarNota(523.25, 0.45, 0.025), 130);
+
+          setTimeout(() => {
+            tocarNota(523.25, 0.45, 0.025);
+          }, 130);
         },
 
         victoria: () => {
@@ -1826,14 +2022,22 @@
       .addEventListener("click", mostrarMenu);
 
     document
+      .getElementById("menuDesdeDerrota")
+      .addEventListener("click", mostrarMenu);
+
+    document
       .getElementById("otraPartida")
       .addEventListener("click", iniciarPartida);
 
-    botonNotas.addEventListener("click", alternarModoNotas);
+    document
+      .getElementById("nuevoDesdeDerrota")
+      .addEventListener("click", iniciarPartida);
 
-    dificultadJuego.addEventListener("change", () => {
-      dificultadSeleccionada = dificultadJuego.value;
-    });
+    document
+      .getElementById("reintentarDerrota")
+      .addEventListener("click", reiniciarPartida);
+
+    botonNotas.addEventListener("click", alternarModoNotas);
 
     document.addEventListener("keydown", evento => {
       if (pantallaJuego.classList.contains("oculto")) return;
@@ -1862,7 +2066,7 @@
         alternarModoNotas();
       }
 
-      if (!seleccion) return;
+      if (!seleccion || partidaTerminada) return;
 
       const movimientos = {
         ArrowUp: [-1, 0],
@@ -1889,11 +2093,6 @@
 
     crearBotonesNumeros();
     prepararMenu();
-
-    /*
-      El juego permanece en el menú hasta que el usuario
-      pulsa el botón "Empezar partida".
-    */
   </script>
 </body>
 </html>
